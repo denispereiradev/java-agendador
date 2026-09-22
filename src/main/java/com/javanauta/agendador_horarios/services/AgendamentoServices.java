@@ -2,14 +2,17 @@ package com.javanauta.agendador_horarios.services;
 import com.javanauta.agendador_horarios.infrastructure.entity.Agendamento;
 import com.javanauta.agendador_horarios.infrastructure.repository.AgendamentoRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
-@service
+@Service
 @RequiredArgsConstructor
 
-public class AgendamentoServices {
+public class AgendamentoService {
 
     private final AgendamentoRepository agendamentoRepository;
 
@@ -25,6 +28,28 @@ public class AgendamentoServices {
             return agendamentoRepository.save(agendamento);
         }
 
+    }
 
+    public void deletarAgendamento (LocalDateTime dataHoraAgendamento, String cliente) {
+
+        agendamentoRepository.deleteByDataHoraAgendamentoCliente(dataHoraAgendamento, cliente);
+    }
+
+
+    public Agendamento BuscarAgendamentosDia(LocalDate data) {
+        LocalDateTime primeiraHoradoDia = data.atStartOfDay();
+        LocalDateTime horaFinaldoDia = data.atTime(23, 59, 59);
+
+        return  agendamentoRepository.findByDataAgendamento(primeiraHoradoDia, horaFinaldoDia);
+    }
+
+    public Agendamento alterarAgendamento(Agendamento agendamento, String cliente, LocalDateTime dataHoraAgendamento) {
+     Agendamento agenda = agendamentoRepository.findByHoraAgendamentoAndCliente(dataHoraAgendamento, cliente );
+
+        if(Objects.isNull(agenda)){
+            throw new RuntimeException("Horario não Preenchido !");
+        }
+        agendamento.setId(agenda.getId());
+        return agendamentoRepository.save(agendamento);
     }
 }
