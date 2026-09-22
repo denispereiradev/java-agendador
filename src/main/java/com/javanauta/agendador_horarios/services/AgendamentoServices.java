@@ -12,7 +12,7 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 
-public class AgendamentoService {
+public class AgendamentoServices {
 
     private final AgendamentoRepository agendamentoRepository;
 
@@ -20,7 +20,8 @@ public class AgendamentoService {
         LocalDateTime horaAgendamento = agendamento.getDataHoraAgendamento();
         LocalDateTime horaFim = agendamento.getDataHoraAgendamento().plusHours(1);
 
-        Agendamento agendados = agendamentoRepository.findByServicoAndDataHoraAgendamentoBetween(agendamento.getServico(), horaAgendamento, horaFim);
+        Agendamento agendados = agendamentoRepository.findByServicoAndDataHoraAgendamentoBetween(agendamento.getServico(),
+                horaAgendamento, horaFim);
 
         if(Objects.nonNull(agendados)){
             throw new RuntimeException("Horario Já Agendaddo");
@@ -32,15 +33,15 @@ public class AgendamentoService {
 
     public void deletarAgendamento (LocalDateTime dataHoraAgendamento, String cliente) {
 
-        agendamentoRepository.deleteByDataHoraAgendamentoCliente(dataHoraAgendamento, cliente);
+        agendamentoRepository.deleteByHoraAgendamentoAgendamentoCliente(dataHoraAgendamento, cliente);
     }
 
 
-    public Agendamento BuscarAgendamentosDia(LocalDate data) {
-        LocalDateTime primeiraHoradoDia = data.atStartOfDay();
-        LocalDateTime horaFinaldoDia = data.atTime(23, 59, 59);
+    public List<Agendamento> buscarAgendamentosDia(LocalDate data){
+        LocalDateTime primeiraHoraDia = data.atStartOfDay();
+        LocalDateTime horaFinalDia = data.atTime(23, 59, 59);
 
-        return  agendamentoRepository.findByDataAgendamento(primeiraHoradoDia, horaFinaldoDia);
+        return agendamentoRepository.findByDataHoraAgendamentoBetween(primeiraHoraDia, horaFinalDia);
     }
 
     public Agendamento alterarAgendamento(Agendamento agendamento, String cliente, LocalDateTime dataHoraAgendamento) {

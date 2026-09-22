@@ -1,19 +1,20 @@
 package com.javanauta.agendador_horarios.Controller;
 
 import com.javanauta.agendador_horarios.infrastructure.entity.Agendamento;
-import com.javanauta.agendador_horarios.services.AgendamentoService;
+import com.javanauta.agendador_horarios.services.AgendamentoServices;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 public class AgendamentoController {
 
-     private final AgendamentoService agendamentoService;
+     private final AgendamentoServices agendamentoService;
 
      @PostMapping
      public ResponseEntity<Agendamento> SalvarAgendamento(@RequestBody Agendamento agendamento) {
@@ -28,8 +29,8 @@ public class AgendamentoController {
      }
 
      @GetMapping
-     public ResponseEntity<Agendamento> buscarAgendamentosDia(@RequestParam LocalDate data){
-        return ResponseEntity.ok().body(agendamentoService.BuscarAgendamentosDia(data));
+     public ResponseEntity<List<Agendamento>> buscarAgendamentosDia(@RequestParam LocalDate data){
+        return ResponseEntity.ok().body(agendamentoService.buscarAgendamentosDia(data));
      }
 
      @PutMapping
